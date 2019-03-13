@@ -4,19 +4,26 @@ import {createStore, applyMiddleware, combineReducers} from "redux";
 import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 import {BrowserRouter} from "react-router-dom";
+import {Route} from "react-router";
 import {composeWithDevTools} from "redux-devtools-extension";
 import "semantic-ui-css/semantic.min.css";
 import App from './App.jsx';
 import * as serviceWorker from './serviceWorker';
 import userReducer from "./components/reducers/userReducer";
+import { userLoggedIn } from './components/actions/auth.js';
 
 const rootReducer = combineReducers({userReducer});
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
+if (localStorage.AuthJWT) {
+    const user = {token: localStorage.AuthJWT};
+    store.dispatch(userLoggedIn(user))
+}
+
 ReactDOM.render(
 <Provider store = {store} >            
 <BrowserRouter>   
-<App />
+<Route component = {App} />
 </BrowserRouter>
 </Provider>
 , document.getElementById('root'));
